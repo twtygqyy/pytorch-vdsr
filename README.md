@@ -45,8 +45,9 @@ We use PIL for image convertion, for best PSNR performance, please use Matlab
   - We provide a pretrained VDSR model trained on [291](http://cv.snu.ac.kr/research/VDSR/train_data.zip) images with data augmentation
   - No bias is used in this implementation, and the gradient clipping's implementation is different from paper
   - Performance in PSNR on Set5
-    | Scale        | VDSR Paper          | VDSR PyTorch|
-    | ------------- |:-------------:| -----:|
-    | 2x      | 37.53      | 37.64 |
-    | 3x     | 33.66      | 33.83|
-    | 4x    | 31.35     | 31.47 |
+  
+| Scale        | VDSR Paper          | VDSR PyTorch|
+| ------------- |:-------------:| -----:|
+| 2x      | 37.53      | 37.64 |
+| 3x      | 33.66      | 33.83|
+| 4x      | 31.35      | 31.47 |

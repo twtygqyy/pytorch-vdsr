@@ -48,6 +48,6 @@ We use PIL for image convertion, for best PSNR performance, please use Matlab
   
 | Scale        | VDSR Paper          | VDSR PyTorch|
 | ------------- |:-------------:| -----:|
-| 2x      | 37.53      | 37.64 |
-| 3x      | 33.66      | 33.83|
-| 4x      | 31.35      | 31.47 |
+| 2x      | 37.53      | 37.65 |
+| 3x      | 33.66      | 33.77|
+| 4x      | 31.35      | 31.45 |

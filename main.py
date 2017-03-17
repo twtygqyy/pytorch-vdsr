@@ -82,7 +82,7 @@ def train(training_data_loader, optimizer, model, criterion, epoch):
     for param_group in optimizer.param_groups:
         param_group["lr"] = lr  
 
-    print(" Epoch={}, lr={}".format(epoch, optimizer.param_groups[0]["lr"]))
+    print("Epoch={}, lr={}".format(epoch, optimizer.param_groups[0]["lr"]))
     
     model.train()    
 

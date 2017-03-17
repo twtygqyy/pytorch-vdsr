@@ -36,7 +36,7 @@ cuda = opt.cuda
 if cuda and not torch.cuda.is_available():
     raise Exception("No GPU found, please run without --cuda")
 
-model = torch.load(opt.model)["model"].module
+model = torch.load(opt.model)["model"]
 
 im_gt_ycbcr = imread("Set5/" + opt.image + ".bmp", mode="YCbCr")
 im_b_ycbcr = imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp", mode="YCbCr")
@@ -51,7 +51,7 @@ im_input = im_b_y/255.
 im_input = Variable(torch.from_numpy(im_input).float()).view(1, -1, im_input.shape[0], im_input.shape[1])
 
 if cuda:
-    model = model.cuda()
+    model = model.module.cuda()
     im_input = im_input.cuda()
  
 start_time = time.time()
@@ -90,5 +90,3 @@ ax = plt.subplot("133")
 ax.imshow(im_h)
 ax.set_title("Output(vdsr)")
 plt.show()
-   
-

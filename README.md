@@ -54,8 +54,8 @@ We use PIL for image convertion, for best PSNR performance, please use Matlab
 
 ### Result
 From left to right are ground truth, bicubic and vdsr
-<p align='center'>
-  <img src='Set5/butterfly_GT.bmp' height='194' width='290'/>
-  <img src='result/input.bmp' height='194' width='290'/>
-  <img src='result/output.bmp' height='194' width='290'/>
+<p>
+  <img src='Set5/butterfly_GT.bmp' height='200' width='200'/>
+  <img src='result/input.bmp' height='200' width='200'/>
+  <img src='result/output.bmp' height='200' width='200'/>
 </p>

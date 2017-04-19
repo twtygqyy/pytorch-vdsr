@@ -9,6 +9,7 @@ usage: main.py [-h] [--batchSize BATCHSIZE] [--nEpochs NEPOCHS] [--lr LR]
                [--step STEP] [--cuda] [--resume RESUME]
                [--start-epoch START_EPOCH] [--clip CLIP] [--threads THREADS]
                [--momentum MOMENTUM] [--weight-decay WEIGHT_DECAY]
+               [--pretrained PRETRAINED]
                
 optional arguments:
   -h, --help            Show this help message and exit
@@ -22,6 +23,8 @@ optional arguments:
   --threads             Number of threads for data loader to use Default=4
   --momentum            Momentum, Default: 0.9
   --weight-decay        Weight decay, Default: 1e-4
+  --pretrained PRETRAINED
+                        path to pretrained model (default: none)
 ```
 
 ### Test

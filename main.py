@@ -22,6 +22,7 @@ parser.add_argument("--clip", type=float, default=0.4, help="Clipping Gradients.
 parser.add_argument("--threads", type=int, default=4, help="Number of threads for data loader to use, Default: 4")
 parser.add_argument("--momentum", default=0.9, type=float, help="Momentum, Default: 0.9")
 parser.add_argument("--weight-decay", "--wd", default=1e-4, type=float, help="Weight decay, Default: 1e-4")
+parser.add_argument('--pretrained', default='', type=str, help='path to pretrained model (default: none)')
 
 def main():
     global opt, model
@@ -51,17 +52,26 @@ def main():
     print("===> Setting GPU")
     if cuda:
         model = torch.nn.DataParallel(model).cuda()
-        criterion = criterion.cuda()  
+        criterion = criterion.cuda()
 
     # optionally resume from a checkpoint
     if opt.resume:
         if os.path.isfile(opt.resume):
             print("=> loading checkpoint '{}'".format(opt.resume))
-            checkpoint = torch.load(opt.resume)        
+            checkpoint = torch.load(opt.resume)
             opt.start_epoch = checkpoint["epoch"] + 1
             model.load_state_dict(checkpoint["model"].state_dict())
         else:
-            print("=> no checkpoint found at '{}'".format(opt.resume))            
+            print("=> no checkpoint found at '{}'".format(opt.resume))
+    
+    # optionally copy weights from a checkpoint
+    if opt.pretrained:
+        if os.path.isfile(opt.pretrained):
+            print("=> loading model '{}'".format(opt.pretrained))
+            weights = torch.load(opt.pretrained)
+            model.load_state_dict(weights['model'].state_dict())
+        else:
+            print("=> no model found at '{}'".format(opt.pretrained))  
             
     print("===> Setting Optimizer")
     optimizer = optim.SGD(model.parameters(), lr=opt.lr, momentum=opt.momentum, weight_decay=opt.weight_decay)
@@ -69,7 +79,7 @@ def main():
     print("===> Training")
     for epoch in range(opt.start_epoch, opt.nEpochs + 1):        
         train(training_data_loader, optimizer, model, criterion, epoch)
-        save_checkpoint(model, epoch)    
+        save_checkpoint(model, epoch)
     
 def adjust_learning_rate(optimizer, epoch):
     """Sets the learning rate to the initial LR decayed by 10 every 10 epochs"""
@@ -80,7 +90,7 @@ def train(training_data_loader, optimizer, model, criterion, epoch):
     lr = adjust_learning_rate(optimizer, epoch-1)
     
     for param_group in optimizer.param_groups:
-        param_group["lr"] = lr  
+        param_group["lr"] = lr
 
     print("Epoch={}, lr={}".format(epoch, optimizer.param_groups[0]["lr"]))
     
@@ -91,10 +101,10 @@ def train(training_data_loader, optimizer, model, criterion, epoch):
 
         if opt.cuda:
             input = input.cuda()
-            target = target.cuda()            
+            target = target.cuda()
         
-        loss = criterion(model(input), target)         
-        optimizer.zero_grad()        
+        loss = criterion(model(input), target)
+        optimizer.zero_grad()
         loss.backward() 
         nn.utils.clip_grad_norm(model.parameters(),opt.clip) 
         optimizer.step()
@@ -102,11 +112,11 @@ def train(training_data_loader, optimizer, model, criterion, epoch):
         if iteration%100 == 0:
             print("===> Epoch[{}]({}/{}): Loss: {:.10f}".format(epoch, iteration, len(training_data_loader), loss.data[0]))
     
-def save_checkpoint(model, epoch):    
+def save_checkpoint(model, epoch):
     model_out_path = "model/" + "model_epoch_{}.pth".format(epoch)
     state = {"epoch": epoch ,"model": model}
     if not os.path.exists("model/"):
-        os.makedirs("model/")        
+        os.makedirs("model/")
 
     torch.save(state, model_out_path)
         

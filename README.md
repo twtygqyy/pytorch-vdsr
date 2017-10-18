@@ -20,7 +20,7 @@ optional arguments:
   --cuda                Use cuda
   --resume              Path to checkpoint
   --clip                Clipping Gradients. Default=0.4
-  --threads             Number of threads for data loader to use Default=4
+  --threads             Number of threads for data loader to use Default=1
   --momentum            Momentum, Default: 0.9
   --weight-decay        Weight decay, Default: 1e-4
   --pretrained PRETRAINED

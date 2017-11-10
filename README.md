@@ -44,7 +44,7 @@ We use PIL for image convertion, for best PSNR performance, please use Matlab
   - We provide a simple hdf5 format training sample in data folder with 'data' and 'label' keys, the training data is generated with Matlab Bicubic Interplotation, please refer [Code for Data Generation](https://github.com/twtygqyy/pytorch-vdsr/tree/master/data) for creating training files.
 
 ### Performance
-  - We provide a pretrained VDSR model trained on [291](http://cv.snu.ac.kr/research/VDSR/train_data.zip) images with data augmentation
+  - We provide a pretrained VDSR model trained on [291](https://drive.google.com/open?id=1Rt3asDLuMgLuJvPA1YrhyjWhb97Ly742) images with data augmentation
   - No bias is used in this implementation, and the gradient clipping's implementation is different from paper
   - Performance in PSNR on Set5
   

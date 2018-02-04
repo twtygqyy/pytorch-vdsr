@@ -27,9 +27,27 @@ optional arguments:
                         path to pretrained model (default: none)
 ```
 
-### Test
+### Evaluation
 ```
-usage: test.py [-h] [--cuda] [--model MODEL] [--image IMAGE] [--scale SCALE]
+usage: eval.py [-h] [--cuda] [--model MODEL] [--dataset DATASET]
+               [--scale SCALE]
+
+PyTorch VDSR Eval
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --cuda             use cuda?
+  --model MODEL      model path
+  --dataset DATASET  dataset name, Default: Set5
+```
+An example of training usage is shown as follows:
+```
+python eval.py --cuda
+```
+
+### Demo
+```
+usage: demo.py [-h] [--cuda] [--model MODEL] [--image IMAGE] [--scale SCALE]
                
 optional arguments:
   -h, --help            Show this help message and exit
@@ -38,7 +56,6 @@ optional arguments:
   --image               Image name. Default=butterfly_GT
   --scale               Scale factor, Default: 4
 ```
-We use PIL for image convertion, for best PSNR performance, please use Matlab
 
 ### Prepare Training dataset
   - We provide a simple hdf5 format training sample in data folder with 'data' and 'label' keys, the training data is generated with Matlab Bicubic Interplotation, please refer [Code for Data Generation](https://github.com/twtygqyy/pytorch-vdsr/tree/master/data) for creating training files.

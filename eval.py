@@ -26,7 +26,7 @@ cuda = opt.cuda
 if cuda and not torch.cuda.is_available():
     raise Exception("No GPU found, please run without --cuda")
 
-model = torch.load(opt.model)["model"]
+model = torch.load(opt.model)["model"].module
 
 scales = [2,3,4]
 

@@ -27,7 +27,7 @@ parser.add_argument('--pretrained', default='', type=str, help='path to pretrain
 def main():
     global opt, model
     opt = parser.parse_args()
-    print opt
+    print(opt)
 
     cuda = opt.cuda
     if cuda and not torch.cuda.is_available():
@@ -63,7 +63,7 @@ def main():
             model.load_state_dict(checkpoint["model"].state_dict())
         else:
             print("=> no checkpoint found at '{}'".format(opt.resume))
-    
+
     # optionally copy weights from a checkpoint
     if opt.pretrained:
         if os.path.isfile(opt.pretrained):
@@ -72,15 +72,15 @@ def main():
             model.load_state_dict(weights['model'].state_dict())
         else:
             print("=> no model found at '{}'".format(opt.pretrained))  
-            
+
     print("===> Setting Optimizer")
     optimizer = optim.SGD(model.parameters(), lr=opt.lr, momentum=opt.momentum, weight_decay=opt.weight_decay)
-            
+
     print("===> Training")
     for epoch in range(opt.start_epoch, opt.nEpochs + 1):        
         train(training_data_loader, optimizer, model, criterion, epoch)
         save_checkpoint(model, epoch)
-    
+
 def adjust_learning_rate(optimizer, epoch):
     """Sets the learning rate to the initial LR decayed by 10 every 10 epochs"""
     lr = opt.lr * (0.1 ** (epoch // opt.step))
@@ -93,8 +93,8 @@ def train(training_data_loader, optimizer, model, criterion, epoch):
         param_group["lr"] = lr
 
     print("Epoch={}, lr={}".format(epoch, optimizer.param_groups[0]["lr"]))
-    
-    model.train()    
+
+    model.train()
 
     for iteration, batch in enumerate(training_data_loader, 1):
         input, target = Variable(batch[0]), Variable(batch[1], requires_grad=False)
@@ -102,16 +102,16 @@ def train(training_data_loader, optimizer, model, criterion, epoch):
         if opt.cuda:
             input = input.cuda()
             target = target.cuda()
-        
+
         loss = criterion(model(input), target)
         optimizer.zero_grad()
         loss.backward() 
         nn.utils.clip_grad_norm(model.parameters(),opt.clip) 
         optimizer.step()
-        
+
         if iteration%100 == 0:
             print("===> Epoch[{}]({}/{}): Loss: {:.10f}".format(epoch, iteration, len(training_data_loader), loss.data[0]))
-    
+
 def save_checkpoint(model, epoch):
     model_out_path = "model/" + "model_epoch_{}.pth".format(epoch)
     state = {"epoch": epoch ,"model": model}

@@ -1,4 +1,4 @@
-import argparse
+import argparse, os
 import torch
 from torch.autograd import Variable
 from scipy.ndimage import imread
@@ -12,6 +12,7 @@ parser.add_argument("--cuda", action="store_true", help="use cuda?")
 parser.add_argument("--model", default="model/model_epoch_50.pth", type=str, help="model path")
 parser.add_argument("--image", default="butterfly_GT", type=str, help="image name")
 parser.add_argument("--scale", default=4, type=int, help="scale factor, Default: 4")
+parser.add_argument("--gpus", default="0", type=str, help="gpu ids (default: 0)")
 
 def PSNR(pred, gt, shave_border=0):
     height, width = pred.shape[:2]
@@ -33,8 +34,12 @@ def colorize(y, ycbcr):
 
 opt = parser.parse_args()
 cuda = opt.cuda
-if cuda and not torch.cuda.is_available():
-    raise Exception("No GPU found, please run without --cuda")
+
+if cuda:
+    print("=> use gpu id: '{}'".format(opt.gpus))
+    os.environ["CUDA_VISIBLE_DEVICES"] = opt.gpus
+    if not torch.cuda.is_available():
+            raise Exception("No GPU found or Wrong gpu id, please run without --cuda")
 
 model = torch.load(opt.model)["model"]
 
@@ -42,9 +47,9 @@ im_gt_ycbcr = imread("Set5/" + opt.image + ".bmp", mode="YCbCr")
 im_b_ycbcr = imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp", mode="YCbCr")
     
 im_gt_y = im_gt_ycbcr[:,:,0].astype(float)
-im_b_y = im_b_ycbcr[:,:,0].astype(float)        
+im_b_y = im_b_ycbcr[:,:,0].astype(float)
 
-psnr_bicubic =PSNR(im_gt_y, im_b_y,shave_border=opt.scale)
+psnr_bicubic = PSNR(im_gt_y, im_b_y,shave_border=opt.scale)
 
 im_input = im_b_y/255.
 
@@ -53,7 +58,7 @@ im_input = Variable(torch.from_numpy(im_input).float()).view(1, -1, im_input.sha
 if cuda:
     model = model.module.cuda()
     im_input = im_input.cuda()
- 
+
 start_time = time.time()
 out = model(im_input)
 elapsed_time = time.time() - start_time
@@ -64,7 +69,7 @@ im_h_y = out.data[0].numpy().astype(np.float32)
 
 im_h_y = im_h_y*255.
 im_h_y[im_h_y<0] = 0
-im_h_y[im_h_y>255.] = 255.            
+im_h_y[im_h_y>255.] = 255.
 
 psnr_predicted = PSNR(im_gt_y, im_h_y[0,:,:],shave_border=opt.scale)
 

@@ -9,7 +9,7 @@ usage: main.py [-h] [--batchSize BATCHSIZE] [--nEpochs NEPOCHS] [--lr LR]
                [--step STEP] [--cuda] [--resume RESUME]
                [--start-epoch START_EPOCH] [--clip CLIP] [--threads THREADS]
                [--momentum MOMENTUM] [--weight-decay WEIGHT_DECAY]
-               [--pretrained PRETRAINED]
+               [--pretrained PRETRAINED] [--gpus GPUS]
                
 optional arguments:
   -h, --help            Show this help message and exit
@@ -25,12 +25,17 @@ optional arguments:
   --weight-decay        Weight decay, Default: 1e-4
   --pretrained PRETRAINED
                         path to pretrained model (default: none)
+  --gpus GPUS           gpu ids (default: 0)
+```
+An example of training usage is shown as follows:
+```
+python main.py --cuda --gpus 0
 ```
 
 ### Evaluation
 ```
 usage: eval.py [-h] [--cuda] [--model MODEL] [--dataset DATASET]
-               [--scale SCALE]
+               [--scale SCALE] [--gpus GPUS]
 
 PyTorch VDSR Eval
 
@@ -39,15 +44,16 @@ optional arguments:
   --cuda             use cuda?
   --model MODEL      model path
   --dataset DATASET  dataset name, Default: Set5
+  --gpus GPUS        gpu ids (default: 0)
 ```
 An example of training usage is shown as follows:
 ```
-python eval.py --cuda
+python eval.py --cuda --dataset Set5
 ```
 
 ### Demo
 ```
-usage: demo.py [-h] [--cuda] [--model MODEL] [--image IMAGE] [--scale SCALE]
+usage: demo.py [-h] [--cuda] [--model MODEL] [--image IMAGE] [--scale SCALE] [--gpus GPUS]
                
 optional arguments:
   -h, --help            Show this help message and exit
@@ -55,6 +61,11 @@ optional arguments:
   --model               Model path. Default=model/model_epoch_50.pth
   --image               Image name. Default=butterfly_GT
   --scale               Scale factor, Default: 4
+  --gpus GPUS           gpu ids (default: 0)
+```
+An example of usage is shown as follows:
+```
+python eval.py --model model/model_epoch_50.pth --dataset Set5 --cuda
 ```
 
 ### Prepare Training dataset

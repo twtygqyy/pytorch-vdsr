@@ -23,6 +23,7 @@ parser.add_argument("--threads", type=int, default=1, help="Number of threads fo
 parser.add_argument("--momentum", default=0.9, type=float, help="Momentum, Default: 0.9")
 parser.add_argument("--weight-decay", "--wd", default=1e-4, type=float, help="Weight decay, Default: 1e-4")
 parser.add_argument('--pretrained', default='', type=str, help='path to pretrained model (default: none)')
+parser.add_argument("--gpus", default="0", type=str, help="gpu ids (default: 0)")
 
 def main():
     global opt, model
@@ -30,8 +31,11 @@ def main():
     print(opt)
 
     cuda = opt.cuda
-    if cuda and not torch.cuda.is_available():
-        raise Exception("No GPU found, please run without --cuda")
+    if cuda:
+        print("=> use gpu id: '{}'".format(opt.gpus))
+        os.environ["CUDA_VISIBLE_DEVICES"] = opt.gpus
+        if not torch.cuda.is_available():
+                raise Exception("No GPU found or Wrong gpu id, please run without --cuda")
 
     opt.seed = random.randint(1, 10000)
     print("Random Seed: ", opt.seed)
@@ -40,7 +44,7 @@ def main():
         torch.cuda.manual_seed(opt.seed)
 
     cudnn.benchmark = True
-        
+
     print("===> Loading datasets")
     train_set = DatasetFromHdf5("data/train.h5")
     training_data_loader = DataLoader(dataset=train_set, num_workers=opt.threads, batch_size=opt.batchSize, shuffle=True)
@@ -88,7 +92,7 @@ def adjust_learning_rate(optimizer, epoch):
 
 def train(training_data_loader, optimizer, model, criterion, epoch):
     lr = adjust_learning_rate(optimizer, epoch-1)
-    
+
     for param_group in optimizer.param_groups:
         param_group["lr"] = lr
 
@@ -113,13 +117,13 @@ def train(training_data_loader, optimizer, model, criterion, epoch):
             print("===> Epoch[{}]({}/{}): Loss: {:.10f}".format(epoch, iteration, len(training_data_loader), loss.data[0]))
 
 def save_checkpoint(model, epoch):
-    model_out_path = "model/" + "model_epoch_{}.pth".format(epoch)
+    model_out_path = "checkpoint/" + "model_epoch_{}.pth".format(epoch)
     state = {"epoch": epoch ,"model": model}
     if not os.path.exists("model/"):
-        os.makedirs("model/")
+        os.makedirs("checkpoint/")
 
     torch.save(state, model_out_path)
-        
+
     print("Checkpoint saved to {}".format(model_out_path))
 
 if __name__ == "__main__":

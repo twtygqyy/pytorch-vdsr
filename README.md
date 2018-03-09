@@ -5,7 +5,7 @@ Very Deep Convolutional Networks"(http://cv.snu.ac.kr/research/VDSR/) in PyTorch
 ## Usage
 ### Training
 ```
-usage: main.py [-h] [--batchSize BATCHSIZE] [--nEpochs NEPOCHS] [--lr LR]
+usage: main_vdsr.py [-h] [--batchSize BATCHSIZE] [--nEpochs NEPOCHS] [--lr LR]
                [--step STEP] [--cuda] [--resume RESUME]
                [--start-epoch START_EPOCH] [--clip CLIP] [--threads THREADS]
                [--momentum MOMENTUM] [--weight-decay WEIGHT_DECAY]
@@ -29,7 +29,7 @@ optional arguments:
 ```
 An example of training usage is shown as follows:
 ```
-python main.py --cuda --gpus 0
+python main_vdsr.py --cuda --gpus 0
 ```
 
 ### Evaluation

@@ -9,7 +9,7 @@ class DatasetFromHdf5(data.Dataset):
         self.data = hf.get('data')
         self.target = hf.get('label')
 
-    def __getitem__(self, index):            
+    def __getitem__(self, index):
         return torch.from_numpy(self.data[index,:,:,:]).float(), torch.from_numpy(self.target[index,:,:,:]).float()
         
     def __len__(self):

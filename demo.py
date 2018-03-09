@@ -41,7 +41,8 @@ if cuda:
     if not torch.cuda.is_available():
             raise Exception("No GPU found or Wrong gpu id, please run without --cuda")
 
-model = torch.load(opt.model)["model"]
+
+model = torch.load(opt.model, map_location=lambda storage, loc: storage)["model"]
 
 im_gt_ycbcr = imread("Set5/" + opt.image + ".bmp", mode="YCbCr")
 im_b_ycbcr = imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp", mode="YCbCr")
@@ -56,8 +57,10 @@ im_input = im_b_y/255.
 im_input = Variable(torch.from_numpy(im_input).float()).view(1, -1, im_input.shape[0], im_input.shape[1])
 
 if cuda:
-    model = model.module.cuda()
+    model = model.cuda()
     im_input = im_input.cuda()
+else:
+    model = model.cpu()
 
 start_time = time.time()
 out = model(im_input)
@@ -67,11 +70,11 @@ out = out.cpu()
 
 im_h_y = out.data[0].numpy().astype(np.float32)
 
-im_h_y = im_h_y*255.
-im_h_y[im_h_y<0] = 0
-im_h_y[im_h_y>255.] = 255.
+im_h_y = im_h_y * 255.
+im_h_y[im_h_y < 0] = 0
+im_h_y[im_h_y > 255.] = 255.
 
-psnr_predicted = PSNR(im_gt_y, im_h_y[0,:,:],shave_border=opt.scale)
+psnr_predicted = PSNR(im_gt_y, im_h_y[0,:,:], shave_border=opt.scale)
 
 im_h = colorize(im_h_y[0,:,:], im_b_ycbcr)
 im_gt = Image.fromarray(im_gt_ycbcr, "YCbCr").convert("RGB")

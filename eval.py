@@ -30,7 +30,7 @@ if cuda:
     if not torch.cuda.is_available():
             raise Exception("No GPU found or Wrong gpu id, please run without --cuda")
 
-model = torch.load(opt.model)["model"].module
+model = torch.load(opt.model, map_location=lambda storage, loc: storage)["model"]
 
 scales = [2,3,4]
 
@@ -73,9 +73,9 @@ for scale in scales:
 
             im_h_y = HR.data[0].numpy().astype(np.float32)
 
-            im_h_y = im_h_y*255.
-            im_h_y[im_h_y<0] = 0
-            im_h_y[im_h_y>255.] = 255.
+            im_h_y = im_h_y * 255.
+            im_h_y[im_h_y < 0] = 0
+            im_h_y[im_h_y > 255.] = 255.
             im_h_y = im_h_y[0,:,:]
 
             psnr_predicted = PSNR(im_gt_y, im_h_y,shave_border=scale)

@@ -55,7 +55,7 @@ def main():
 
     print("===> Setting GPU")
     if cuda:
-        model = torch.nn.DataParallel(model).cuda()
+        model = model.cuda()
         criterion = criterion.cuda()
 
     # optionally resume from a checkpoint
@@ -81,7 +81,7 @@ def main():
     optimizer = optim.SGD(model.parameters(), lr=opt.lr, momentum=opt.momentum, weight_decay=opt.weight_decay)
 
     print("===> Training")
-    for epoch in range(opt.start_epoch, opt.nEpochs + 1):        
+    for epoch in range(opt.start_epoch, opt.nEpochs + 1):
         train(training_data_loader, optimizer, model, criterion, epoch)
         save_checkpoint(model, epoch)
 
@@ -96,7 +96,7 @@ def train(training_data_loader, optimizer, model, criterion, epoch):
     for param_group in optimizer.param_groups:
         param_group["lr"] = lr
 
-    print("Epoch={}, lr={}".format(epoch, optimizer.param_groups[0]["lr"]))
+    print("Epoch = {}, lr = {}".format(epoch, optimizer.param_groups[0]["lr"]))
 
     model.train()
 
@@ -119,7 +119,7 @@ def train(training_data_loader, optimizer, model, criterion, epoch):
 def save_checkpoint(model, epoch):
     model_out_path = "checkpoint/" + "model_epoch_{}.pth".format(epoch)
     state = {"epoch": epoch ,"model": model}
-    if not os.path.exists("model/"):
+    if not os.path.exists("checkpoint/"):
         os.makedirs("checkpoint/")
 
     torch.save(state, model_out_path)
